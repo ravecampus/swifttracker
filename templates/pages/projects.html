@@ -28,27 +28,29 @@
 
     <div class="container">
      <div class="row">
-      <div class="col-md-4 col-md-offset-4">
+      <div class="col-md-8 col-md-offset-2">
        <div class="panel-default">
         <div class="panel-heading">
            Swiftkind Tracker
         </div>
          <div class="panel-body">
        
-       <h1> {{ data.name }}</h1> <br>
+       <p class="title"> {{ data.name }}</p> <br>
 <b>Position: </b>{{ data.position }}
 
 <br>
 <b>Weekly Hours: </b>{{ data.weekly_hours}}
 <hr>
-<h3> Weekly Reports </h3><a href="{% url 'add_report' data.id %}" class="btn btn-default btn-side ">ADD</a>
-<hr>
-	{% for report in reports %}
+<h4 class="left_a"> Weekly Reports </h4><a href="{% url 'add_report' data.id %}" class="btn btn-default btn-side ">ADD</a>
 
+	{% for report in reports %}
+  <br>
+       
+	<div class="jumbotron">
+	    <p>
        <labe>Title: </labe>{{ report.title }}<br>
        <labe>Date: </labe>{{ report.track_date }}<br>
-	<div class="jumbotron">
-	   
+      </p>
 	     <labe>What i did?: </labe>{{ report.question1 }}<br>
 	     <labe>What to do?: </labe>{{ report.question2 }}<br>
 	     <labe>Issues / Blocker: </labe>{{ report.question3 }}<br>

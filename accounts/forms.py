@@ -49,24 +49,26 @@ class Login(forms.Form):
             self.user_cache = user
         return self.cleaned_data
 
-class EditForm(forms.ModelForm):
-    first_name = forms.CharField()
-    class Meta:
-        model = Profile
-        # model = User
-        fields = [
-                # 'first_name',
-                # 'last_name',
-                'position',
-                'birthdate', 
-                'phone', 
-                'address',
-                'first_name']
-        # data = Profile.objects.all()
-        # position = forms.CharField(max_length=200)
-        # birthdate = forms.CharField(max_length=200)
-        # phone = forms.CharField(max_length=200)
-        # address =forms.CharField(max_length=200)
+class EditForm(forms.Form):
+    first_name = forms.CharField(max_length =200)
+    last_name = forms.CharField(max_length=200)
+    position = forms.CharField(max_length=200)
+    birthdate = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class':'datepicker','id':'datepicker', 'data-format':'dd/MM/yyyy hh:mm:ss'}))
+    phone = forms.CharField(max_length=200)
+    address =forms.CharField(max_length=200)
+    # class Meta:
+    #     model = Profile
+    #     # model = User
+    #     fields = [
+    #             # 'first_name',
+    #             # 'last_name',
+    #             'position',
+    #             'birthdate', 
+    #             'phone', 
+    #             'address',
+    #             ]
+    #     # data = Profile.objects.all()
+        
 
 class WeeklyReports(forms.Form):
     title = forms.CharField(max_length = 2000)

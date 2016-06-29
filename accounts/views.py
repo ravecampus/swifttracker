@@ -5,7 +5,6 @@ from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from datetime import date, timedelta
 from django.shortcuts import render
 from django.conf import settings
 import datetime
@@ -56,9 +55,16 @@ def dashboard_view(request):
         if info.birthdate:
              now = datetime.datetime.now()    
              profilebd = info.birthdate.year
-             current_year = now.year
-             # age = current_year - profilebd
-             age = now - timedelta(profilebd)
+             # current_year = now.year
+             # # age = current_year - profilebd
+             # t1 = datetime.strptime("Mon, 17 Nov 2008 01:45:32 +0200","%a, %d %b %Y %H:%M:%S +0200")
+             # t2 = datetime.now()
+             # tdelta = t2 - t1 # actually a datetime.timedelta object
+             # print tdelta.days
+             age = int((datetime.date.today() - info.birthdate).days / 365.25  )
+
+
+             # age = now - timedelta(profilebd)
              context = {'info':info,'proj':proj,'age':age}  
              return render(request,'pages/dashboard.html', context)
         else:
@@ -72,7 +78,13 @@ def edit_profile_view(request):
     profile = Profile.objects.get(user=request.user)
    
 
-    form = EditForm(instance=profile, initial={'first_name': request.user.first_name}) 
+    form = EditForm(initial={
+        'first_name': request.user.first_name,
+        'last_name': request.user.last_name,
+        'position':profile.position,
+        'birthdate': profile.birthdate,
+        'phone':profile.phone,
+        'address':profile.address}) 
     if request.method == 'POST':
         # user_id = request.GET.get('id')
         form = EditForm(request.POST)
