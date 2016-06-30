@@ -41,7 +41,7 @@
 <br>
 <b>Weekly Hours: </b>{{ data.weekly_hours}}
 <hr>
-<h4 class="left_a"> Weekly Reports </h4><a href="{% url 'add_report' data.id %}" class="btn btn-default btn-side ">ADD</a>
+<h4 class="left_a"> Weekly Report: </h4><a href="{% url 'add_report' data.id %}" class="btn btn-default btn-side ">ADD</a>
 
 	{% for report in reports %}
   <br>

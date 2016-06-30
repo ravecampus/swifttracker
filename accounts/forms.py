@@ -53,7 +53,11 @@ class EditForm(forms.Form):
     first_name = forms.CharField(max_length =200)
     last_name = forms.CharField(max_length=200)
     position = forms.CharField(max_length=200)
-    birthdate = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class':'datepicker','id':'datepicker', 'data-format':'dd/MM/yyyy hh:mm:ss'}))
+    birthdate = forms.CharField(max_length=200, widget=forms.TextInput(attrs={
+        # 'class':'datepicker',
+        'id':'picker',
+        # 'data-format':'dd/MM/yyyy hh:mm:ss'
+        }))
     phone = forms.CharField(max_length=200)
     address =forms.CharField(max_length=200)
     # class Meta:
