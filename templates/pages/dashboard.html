@@ -19,7 +19,7 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'css/login.css' %}" rel="stylesheet">
 
-    <link href="{% static 'fonts/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
     
  </head>
@@ -44,10 +44,10 @@
 <hr>
 <div class="row">
       <div class="col-md-6">
-                  <label>First Name: </label>{{ user.first_name }}<br>
-                  <label>Last Name: </label>{{ user.last_name }}<br>
-                  <label>Position: </label>{{ info.position}}<br>
-                  <label>Birthdate: </label>{{ info.birthdate }}<br>
+                  <label>First Name: </label> {{ user.first_name }}<br>
+                  <label>Last Name: </label> {{ user.last_name }}<br>
+                  <label>Position: </label> {{ info.position }}<br>
+                  <label>Birthdate: </label> {{ info.birthdate }}<br>
       </div>
       <div class="col-md-6">
                   <label>Phone: </label> {{ info.phone }}<br>

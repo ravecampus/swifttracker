@@ -20,7 +20,9 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'css/login.css' %}" rel="stylesheet">
 
-    <link href="{% static 'fonts/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+    <link href ="{% static 'css/datepicker.css' %}" rel="stylesheet">
 
     
  </head>
@@ -29,7 +31,7 @@
 
     <div class="container">
      <div class="row">
-      <div class="col-md-8 col-md-offset-2">
+      <div class="col-md-6 col-md-offset-3">
        <div class="panel-default">
         <div class="panel-heading">
            Swiftkind Tracker
@@ -57,6 +59,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/calendar.js'%}"></script>
 
   </body>
 </html>

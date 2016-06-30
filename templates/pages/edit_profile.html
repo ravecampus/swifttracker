@@ -20,9 +20,9 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'css/login.css' %}" rel="stylesheet">
 
-    <link href="{% static 'fonts/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
-    <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/datepicker.css' %}" rel="stylesheet" type="text/css">
 
     
  </head>
@@ -60,19 +60,13 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static 'js/calendar.js' %}"></script>
-    <script src="{% static 'js/datepicker.min.js' %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script type="text/javascript">
- $(function() {
-    $('#picker').datetimepicker({
-      language: 'en',
-      pick12HourFormat: true
-    });
-  });
 
-</script>
+    
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+   <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/calendar.js' %}"></script>
 
   </body>
 </html>

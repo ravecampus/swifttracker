@@ -25,7 +25,8 @@ def signup_view(request):
             user.save()
 
             # name = User.objects.get(username =info['username'])
-            profile = Profile.objects.create(user=user, position='', phone='', address='')
+            profile = Profile.objects.create(user=user, phone='', address='')
+          
 
             print(request.POST)
             return HttpResponseRedirect(reverse('login'))
@@ -52,19 +53,12 @@ def dashboard_view(request):
     if request.user.is_authenticated():
         info = Profile.objects.get(user=request.user)
         proj = Project.objects.filter(username=request.user)
+
         if info.birthdate:
              now = datetime.datetime.now()    
              profilebd = info.birthdate.year
-             # current_year = now.year
-             # # age = current_year - profilebd
-             # t1 = datetime.strptime("Mon, 17 Nov 2008 01:45:32 +0200","%a, %d %b %Y %H:%M:%S +0200")
-             # t2 = datetime.now()
-             # tdelta = t2 - t1 # actually a datetime.timedelta object
-             # print tdelta.days
              age = int((datetime.date.today() - info.birthdate).days / 365.25  )
 
-
-             # age = now - timedelta(profilebd)
              context = {'info':info,'proj':proj,'age':age}  
              return render(request,'pages/dashboard.html', context)
         else:
@@ -73,18 +67,20 @@ def dashboard_view(request):
             return render(request, 'pages/dashboard.html', context)
     else:
         return HttpResponseRedirect(reverse('login'))
+
+
 @login_required(login_url='login')
 def edit_profile_view(request):
+    
     profile = Profile.objects.get(user=request.user)
-   
-
     form = EditForm(initial={
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
-        'position':profile.position,
         'birthdate': profile.birthdate,
+        'position' :profile.position,
         'phone':profile.phone,
-        'address':profile.address}) 
+        'address':profile.address})
+    
     if request.method == 'POST':
         # user_id = request.GET.get('id')
         form = EditForm(request.POST)

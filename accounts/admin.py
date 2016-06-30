@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .forms import SignUp
 from .models import Profile, Project, WeeklyReport
 
 class ProjectUser(admin.ModelAdmin):
@@ -12,7 +11,7 @@ admin.site.register(Project, ProjectUser)
 
 class ProfileUser(admin.ModelAdmin):
     list_display = ['user','position','birthdate','phone', 'address']
-    form = SignUp
+    # form = SignUp
     # class Meta:
     #     model = Profile
  
@@ -25,3 +24,4 @@ class WeeklyReportUser(admin.ModelAdmin):
         model = WeeklyReport
 
 admin.site.register(WeeklyReport, WeeklyReportUser)
+

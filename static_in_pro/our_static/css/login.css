@@ -10,7 +10,9 @@ body {
 .navbar-nav>li>a {
    float:center;
 }
-
+.navbar-default .navbar-brand {
+    color: #074f8e;
+}
 .panel-default>.panel-heading {
     margin-top: 50px;
     color: #fff;
@@ -20,11 +22,12 @@ body {
 
 .panel-heading {
     padding: 10px 15px;
-    border-bottom: 1px solid transparent;
+    border-bottom: 2px solid #797878;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     font-size: 24px;
     text-align: center;
+
 }
 
 .panel-body {

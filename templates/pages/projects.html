@@ -19,7 +19,7 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'css/login.css' %}" rel="stylesheet">
 
-    <link href="{% static 'fonts/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
     
  </head>
@@ -49,7 +49,7 @@
 	<div class="jumbotron">
 	    <p>
        <labe>Title: </labe>{{ report.title }}<br>
-       <labe>Date: </labe>{{ report.track_date }}<br>
+       <labe>Date: </labe>{{ report.date_track }}<br>
       </p>
 	     <labe>What i did?: </labe>{{ report.question1 }}<br>
 	     <labe>What to do?: </labe>{{ report.question2 }}<br>
