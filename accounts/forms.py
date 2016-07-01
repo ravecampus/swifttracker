@@ -2,12 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from .models import Profile, Project
 from django import forms
-
-# class SignUp(forms.ModelForm):
-#     class Meta:
-#         model = Profile
-#         fields = ['position','birthdate', 'phone', 'address']
-		
+	
 class ValidationSignUp(forms.Form):
   
     username = forms.CharField()
@@ -56,7 +51,7 @@ class EditForm(forms.Form):
 
     first_name = forms.CharField(max_length =200)
     last_name = forms.CharField(max_length=200)
-    position = forms.MultipleChoiceField(choices=POSITION)
+    position = forms.CharField(widget=forms.Select(choices= POSITION))
     birthdate = forms.DateField(widget=forms.TextInput(attrs={
         'id':'datepicker',
         'data-date-format':'yyyy-mm-dd',
@@ -69,6 +64,22 @@ class EditForm(forms.Form):
         return birthdate    
 
 class WeeklyReports(forms.Form):
+    title = forms.CharField(max_length = 2000)
+    date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
+        'id':'datepicker',
+        'data-date-format':'yyyy-mm-dd'
+        }),input_formats=['%Y-%m-%d'])
+    question1 = forms.CharField(label='What I did?:', widget=forms.Textarea)
+    question2 = forms.CharField(label='What to do?:', widget=forms.Textarea)
+    question3 = forms.CharField(label='Issues/Blocker:', widget=forms.Textarea)
+    time_track = forms.FloatField(label='weekly hours')
+
+    def clean_date_track(self):
+        date_track = self.cleaned_data.get('date_track')
+        return date_track
+
+
+class WeeklyReportsEdit(forms.Form):
     title = forms.CharField(max_length = 2000)
     date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
         'id':'datepicker',

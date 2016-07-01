@@ -103,13 +103,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root") 
-# "/var/www/example.com/static/"
+# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root") 
+# # "/var/www/example.com/static/"
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static_in_pro", "our_static"),
-    # os.path.join(BASE_DIR, "static_in_env"),
-    # '/var/www/static/',
+    os.path.join(BASE_DIR, "static"),
 )
+
+# STATIC_ROOT  = os.path.join(BASE_DIR, "static")
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

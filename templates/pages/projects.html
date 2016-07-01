@@ -46,7 +46,8 @@
 	{% for report in reports %}
   <br>
        
-	<div class="jumbotron">
+	<div class="jumbotron"><a href="{% url 'edit_report' data.id report.id %}" class="right_a">edit</a>
+
 	    <p>
        <labe><b>Title:</b> </labe><i>{{ report.title }}</i><br>
      

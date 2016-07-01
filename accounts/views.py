@@ -1,4 +1,4 @@
-from .forms import ValidationSignUp, Login, EditForm, WeeklyReports
+from .forms import ValidationSignUp, Login, EditForm, WeeklyReports, WeeklyReportsEdit
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Project, WeeklyReport
 from django.contrib.auth import login, logout
@@ -87,7 +87,8 @@ def edit_profile_view(request):
             user.update(first_name = info['first_name'])
         
             profile = Profile.objects.filter(user=request.user)
-            profile.update(position = info['position'],
+            profile.update(
+                position = info['position'],
                 birthdate = info['birthdate'],
                 phone = info['phone'],
                 address = info['address']) 
@@ -112,7 +113,7 @@ def  add_report_view(request, project_id):
         form = WeeklyReports(request.POST)
         if form.is_valid():
             info = request.POST
-            projects = Project.objects.get(id=project_id)
+            projects = Project.objects.get(id=project_id, username=request.user)
             reports = WeeklyReport.objects.create(
                 project_name = projects, 
                 user = request.user,
@@ -128,6 +129,37 @@ def  add_report_view(request, project_id):
             return render(request, 'pages/add_report.html', {'form':form})
 
     return render(request, 'pages/add_report.html',{'form':form})
+
+
+@login_required(login_url='login')
+def edit_report_view(request,project_id ,report_id):
+
+    project = WeeklyReport.objects.get(user=request.user ,id=report_id)
+    form = WeeklyReportsEdit(initial={
+        'title':project.title,
+        'date_track':project.date_track,
+        'question1':project.question1,
+        'question2':project.question2,
+        'question3':project.question3,
+        'time_track':project.time_track
+        })
+    if request.method == 'POST':
+        form = WeeklyReportsEdit(request.POST)
+        if form.is_valid():
+            info = request.POST
+            reports = WeeklyReport.objects.filter(id=report_id)
+            reports.update(title = project.title,
+            date_track = info['date_track'],
+            question1 = info['question1'],
+            question2 = info['question2'],
+            question3 = info['question3'],
+            time_track = info['time_track'])
+        return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':project_id}))
+    else:
+        return render(request, 'pages/edit_report.html',{'form':form})
+
+    return render(request, 'pages/edit_report.html',{'form':form})
+
 
 def logout_view(request):
     logout(request)

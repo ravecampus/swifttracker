@@ -11,10 +11,7 @@ admin.site.register(Project, ProjectUser)
 
 class ProfileUser(admin.ModelAdmin):
     list_display = ['user','position','birthdate','phone', 'address']
-    # form = SignUp
-    # class Meta:
-    #     model = Profile
- 
+  
 admin.site.register(Profile, ProfileUser)
 
 

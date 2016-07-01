@@ -38,9 +38,6 @@
         </div>
          <div class="panel-body">  
 			<form method="POST" >{% csrf_token %}
-	             
-	             <!-- label>First name: </label><input type="text" class="form-control" name="first_name" value="{{ user.first_name }}"><br>
-	             <label>Last name: </label><input type="text" class="form-control" name="last_name" value="{{ user.last_name }}"><br> -->
 	             {{ form | crispy }}
 	             <input type="hidden" name="username" value="{{ user.username }}">
 	             <button type="submit" class="btn btn-primary btn-block">Save</button>
@@ -62,8 +59,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
 
     
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-   <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+   <!--  <script src="{% static 'js/jquery.min.js' %}"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
     <script src="{% static 'js/calendar.js' %}"></script>

@@ -72,8 +72,8 @@
                     	<tbody>
                     	{% for list_proj in proj %}
                     		<tr>
-                    			<td>
-                    			<a href=" {% url 'project_detail' list_proj.id %}"><b>{{ list_proj.name}}</b> view details</a>	
+                    			<td><li>
+                    			<a href=" {% url 'project_detail' list_proj.id %}"><b>{{ list_proj.name}}</b> view details</a></li>
                     			</td>
                     		</tr>
                     	{% endfor%}
