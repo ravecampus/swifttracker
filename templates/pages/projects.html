@@ -48,13 +48,14 @@
        
 	<div class="jumbotron">
 	    <p>
-       <labe>Title: </labe>{{ report.title }}<br>
-       <labe>Date: </labe>{{ report.date_track }}<br>
+       <labe><b>Title:</b> </labe><i>{{ report.title }}</i><br>
+     
       </p>
-	     <labe>What i did?: </labe>{{ report.question1 }}<br>
-	     <labe>What to do?: </labe>{{ report.question2 }}<br>
-	     <labe>Issues / Blocker: </labe>{{ report.question3 }}<br>
-	     <labe>Weekly hours: </labe>{{ report.time_track }}<br>
+       <labe><b>Date:</b> </labe><i>{{ report.date_track }}</i><br>
+	     <labe><b>What i did?:</b> </labe><i>{{ report.question1 }}</i><br>
+	     <labe><b>What to do?:</b> </labe><i>{{ report.question2 }}</i><br>
+	     <labe><b>Issues / Blocker:</b> </labe><i>{{ report.question3 }}</i><br>
+	     <labe><b>Weekly hours:</b> </labe><i>{{ report.time_track }}</i><br>
     </div>
 	{% endfor %}
          </div>

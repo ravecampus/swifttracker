@@ -77,7 +77,7 @@ class WeeklyReports(forms.Form):
     question1 = forms.CharField(label='What I did?:', widget=forms.Textarea)
     question2 = forms.CharField(label='What to do?:', widget=forms.Textarea)
     question3 = forms.CharField(label='Issues/Blocker:', widget=forms.Textarea)
-    time_track = forms.IntegerField(label='weekly hours')
+    time_track = forms.FloatField(label='weekly hours')
 
     def clean_date_track(self):
         date_track = self.cleaned_data.get('date_track')

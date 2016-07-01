@@ -23,11 +23,7 @@ def signup_view(request):
                 email = info['email'])
             user.set_password(info['password'])
             user.save()
-
-            # name = User.objects.get(username =info['username'])
             profile = Profile.objects.create(user=user, phone='', address='')
-          
-
             print(request.POST)
             return HttpResponseRedirect(reverse('login'))
         else:
@@ -82,7 +78,6 @@ def edit_profile_view(request):
         'address':profile.address})
     
     if request.method == 'POST':
-        # user_id = request.GET.get('id')
         form = EditForm(request.POST)
         if form.is_valid():
 
@@ -102,21 +97,11 @@ def edit_profile_view(request):
 
     return render(request, 'pages/edit_profile.html', {'form':form})
 
-# def edit_profile_again(request):
-# 
+
 @login_required(login_url='login')
 def project_view(request, project_id): 
     data = Project.objects.get(id = project_id)
-
-    
-    
     reports = WeeklyReport.objects.filter(project_name =data, user =request.user)
-    # form = ProjectQuery(request.GET)
-    # if form.is_valid():
-    #     info = request.GET
-
-    # else:
-    #     return render(request, 'pages/project.html',{})
     return render(request ,'pages/projects.html',{'data':data, 'reports':reports })
  
 
