@@ -115,8 +115,12 @@ class DashboardView(TemplateView):
     context = {}
 
     def get(self, *args, **kwargs):
-        self.context['info'] = Profile.objects.get(user=self.request.user)
-        self.context['projects'] = Project.objects.filter(username=self.request.user)
+        info = Profile.objects.get(user=self.request.user)
+        projects = Project.objects.filter(username=self.request.user)
+        age = int((datetime.date.today() - info.birthdate).days / 365.25 )
+        self.context['info'] = info
+        self.context['projects'] = projects
+        self.context['age'] = age
         return render(self.request, self.template_name, self.context)
 
     def post(self, *args, **kwargs):
@@ -124,10 +128,8 @@ class DashboardView(TemplateView):
             info = Profile.objects.get(user=self.request.user)
             projects = Project.objects.filter(username=self.request.user)
 
-            age = int((datetime.date.tody() - info.birthdate).days / 365.25 )
             self.context['info'] = info
             self.context['projects'] = projects
-            self.context['age'] = age
             return render(self.request, self.template_name, self.context)
         else:
             return HttpResponseRedirect(reverse('login'))
@@ -173,38 +175,48 @@ class EditProfileView(TemplateView):
 
     def get(self, *args, **kwargs):
         profile = Profile.objects.get(user=self.request.user)
-        form = EditForm(initial={
+
+        form = EditForm(instance=profile, initial={
             'first_name':self.request.user.first_name,
-            'last_name':self.request.user.last_name,
-            'birthdate':profile.birthdate,
-            'position':profile.position,
-            'phone':profile.phone,
-            'address':profile.address
+            'last_name':self.request.user.last_name
             })
         self.context['form'] = form
         return render(self.request, self.template_name, self.context)
 
     def post(self, *args, **kwargs):
-        form = EditForm(self.request.POST, request=self.request)
+        profile = Profile.objects.get(user=self.request.user)
+        form = EditForm(self.request.POST, instance=profile)
+        
         if form.is_valid():
-            form.save()
+            obj = form.save(commit=False)
+            user = User.objects.get(id=self.request.user.id)
+            user.last_name = form.cleaned_data['last_name']
+            user.first_name = form.cleaned_data['first_name']
+            obj.save()
+            user.save()
+
             return HttpResponseRedirect(reverse('dashboard'))
         else:
             self.context['form'] = form
-            return render(self.request, self.template_name, self.context)
-        self.context['form'] = form
         return render(self.request, self.template_name, self.context)
 
 
+# @login_required(login_url='login')
+# def project_view(request, project_id): 
+#     data = Project.objects.get(id = project_id)
+#     reports = WeeklyReport.objects.filter(project_name =data, user =request.user).order_by('-id')
+#     return render(request ,'pages/projects.html',{'data':data, 'reports':reports })
 
+class ProjectView(TemplateView):
+    template_name = 'pages/projects.html'
+    context = {}
 
-
-@login_required(login_url='login')
-def project_view(request, project_id): 
-    data = Project.objects.get(id = project_id)
-    reports = WeeklyReport.objects.filter(project_name =data, user =request.user).order_by('-id')
-    return render(request ,'pages/projects.html',{'data':data, 'reports':reports })
- 
+    def get(self, *args, **kwargs):
+        data = Project.objects.get(id=kwargs['project_id'])
+        reports = WeeklyReport.objects.filter(project_name=data, user=self.request.user).order_by('-id')
+        self.context['data'] = data
+        self.context['reports'] = reports
+        return render(self.request, self.template_name, self.context)
 
 @login_required(login_url='login')
 def  add_report_view(request, project_id):
@@ -227,7 +239,6 @@ def  add_report_view(request, project_id):
             return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':project_id}))
         else:
             return render(request, 'pages/add_report.html', {'form':form})
-
     return render(request, 'pages/add_report.html',{'form':form})
 
 

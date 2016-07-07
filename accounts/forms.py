@@ -73,41 +73,65 @@ class Login(forms.Form):
             self.user_cache = user
 
 
-class EditForm(forms.Form):
-    POSITION = (
-        ('TRAINEE','trainee'),
-        ('DEVELOPER','developer'),
-        ('DESIGNER','designer'))
+# class EditForm(forms.Form):
+#     POSITION = (
+#         ('TRAINEE','trainee'),
+#         ('DEVELOPER','developer'),
+#         ('DESIGNER','designer'))
+
+#     first_name = forms.CharField(max_length =200)
+#     last_name = forms.CharField(max_length=200)
+#     position = forms.CharField(widget=forms.Select(choices= POSITION))
+#     birthdate = forms.DateField(widget=forms.TextInput(attrs={
+#         'id':'datepicker',
+#         'data-date-format':'yyyy-mm-dd',
+#         }),input_formats=['%Y-%m-%d'])
+#     phone = forms.CharField(max_length=200)
+#     address =forms.CharField(max_length=200)
+
+#     def __init__(self, *args, **kwargs):
+#         self.request = kwargs.pop('request', None)
+#         return super(EditForm, self).__init__(*args, **kwargs)
+
+    
+#     def save(self, force_insert=False, force_update=False, commit=True):
+#         instance = super(EditForm, self).save(commit=False)
+
+#         if commit:
+#             instance.last_name = self.cleaned_data['last_name']
+#             intance.first_name = self.cleaned_data['first_name']
+            
+#         return instance 
+
+class EditForm(forms.ModelForm):
+    # POSITION = (
+    #     ('TRAINEE','trainee'),
+    #     ('DEVELOPER','developer'),
+    #     ('DESIGNER','designer'))
 
     first_name = forms.CharField(max_length =200)
     last_name = forms.CharField(max_length=200)
-    position = forms.CharField(widget=forms.Select(choices= POSITION))
+    # position = forms.CharField(widget=forms.Select(choices= POSITION))
     birthdate = forms.DateField(widget=forms.TextInput(attrs={
         'id':'datepicker',
         'data-date-format':'yyyy-mm-dd',
         }),input_formats=['%Y-%m-%d'])
-    phone = forms.CharField(max_length=200)
-    address =forms.CharField(max_length=200)
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        return super(EditForm, self).__init__(*args, **kwargs)
-
-    def clean_birthdate(self):
-        birthdate = self.cleaned_data.get('birthdate')
-        return birthdate   
-    
-    def save(self, force_insert=False, force_update=False, commit=True):
-        instance = super(EditForm, self).save(commit=False)
-
-        if commit:
-            instance.last_name = self.cleaned_data['last_name']
-            intance.first_name = self.cleaned_data['first_name']
-            
-        return instance 
+    # phone = forms.CharField(max_length=200)
+    # address =forms.CharField(max_length=200)
 
 
+    class Meta:
+        model = Profile
+        # fields ={'first_name','last_name'}
+        fields = {
+        'first_name',
+        'last_name',
+        'position',
+        'birthdate',
+        'phone',
+        'address'}
 
+   
 class WeeklyReports(forms.Form):
     title = forms.CharField(max_length = 2000)
     date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
