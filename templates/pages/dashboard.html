@@ -61,7 +61,7 @@
                     <table>
                     	<thead>
                     		<th>
-                    			<tr>{% if proj %}
+                    			<tr>{% if projects %}
                               
                     				<h3>Projects:</h3>
                              
@@ -70,10 +70,10 @@
                     		</th>
                     	</thead>
                     	<tbody>
-                    	{% for list_proj in proj %}
+                    	{% for project in projects %}
                     		<tr>
                     			<td><li>
-                    			<a href=" {% url 'project_detail' list_proj.id %}"><b>{{ list_proj.name}}</b> view details</a></li>
+                    			<a href=" {% url 'project_detail' project.id %}"><b>{{ project.name}}</b> view details</a></li>
                     			</td>
                     		</tr>
                     	{% endfor%}

@@ -8,101 +8,201 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.conf import settings
 import datetime
+# class based view
+from django.views.generic import TemplateView
 
 def home_view(request):
     return render(request, 'pages/home.html',{})
 
-def signup_view(request):
-    if request.method == "POST":
-        form = ValidationSignUp(request.POST)
-        if form.is_valid():
-            info = request.POST
+# def signup_view1(request):
+#     if request.method == "POST":
+#         form = ValidationSignUp(request.POST)
+#         if form.is_valid():
+#             info = request.POST
         
-            user = User.objects.create(
-                username = info['username'],
-                email = info['email'])
-            user.set_password(info['password'])
-            user.save()
-            profile = Profile.objects.create(user=user, phone='', address='')
-            print(request.POST)
+#             user = User.objects.create(
+#                 username = info['username'],
+#                 email = info['email'])
+#             user.set_password(info['password'])
+#             user.save()
+#             profile = Profile.objects.create(user=user, phone='', address='')
+#             print(request.POST)
+#             return HttpResponseRedirect(reverse('login'))
+#         else:
+#             return render(request, "pages/signup.html",{'form':form})
+#     form = ValidationSignUp
+#     return render(request, "pages/signup.html",{'form':form})
+
+# class based 
+class SignupView(TemplateView):
+    template_name = 'pages/signup.html'
+    context = {}
+
+    def get(self, *args, **kwargs):
+        self.context['form'] = ValidationSignUp()
+        return render(self.request, self.template_name, self.context)
+
+    def post(self, *args, **kwargs):
+        form = ValidationSignUp(self.request.POST, request=self.request)
+        if form.is_valid():
+            form.save()
             return HttpResponseRedirect(reverse('login'))
-        else:
-            return render(request, "pages/signup.html",{'form':form})
-    form = ValidationSignUp
-    return render(request, "pages/signup.html",{'form':form})
+
+        self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
+
+# function based
+# def login_view(request):
+#     form = Login()
+#     if request.method == 'POST':
+#         form = Login(request.POST)
+#         if form.is_valid():
+#             login(request, form.user_cache)
+#             return HttpResponseRedirect(reverse('dashboard'))
+#         else:
+#             return render(request,'pages/login.html',{'form':form})
+#     else:
+#         return render(request, 'pages/login.html',{'form':form})
 
 
-def login_view(request):
-    form = Login()
-    if request.method == 'POST':
-        form = Login(request.POST)
+#class based
+class LoginView(TemplateView):
+    template_name = 'pages/login.html'
+    context = {}
+
+    def get(self, *args, **kwargs):
+        self.context['form'] = Login()
+        return render(self.request, self.template_name, self.context)
+
+    def post(self, *args, **kwargs):
+        form = Login(self.request.POST, request=self.request)
         if form.is_valid():
-            login(request, form.user_cache)
+            login(self.request, form.user_cache)
             return HttpResponseRedirect(reverse('dashboard'))
         else:
-            return render(request,'pages/login.html',{'form':form})
-    else:
-        return render(request, 'pages/login.html',{'form':form})
+            self.context['form'] = form
+            return render(self.request, self.template_name, self.context)
+        self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
 
-@login_required(login_url='login')
-def dashboard_view(request):
-    if request.user.is_authenticated():
-        info = Profile.objects.get(user=request.user)
-        proj = Project.objects.filter(username=request.user)
 
-        if info.birthdate:
-             now = datetime.datetime.now()    
-             profilebd = info.birthdate.year
-             age = int((datetime.date.today() - info.birthdate).days / 365.25  )
+# @login_required(login_url='login')
+# def dashboard_view(request):
+#     if request.user.is_authenticated():
+#         info = Profile.objects.get(user=request.user)
+#         proj = Project.objects.filter(username=request.user)
 
-             context = {'info':info,'proj':proj,'age':age}  
-             return render(request,'pages/dashboard.html', context)
+#         if info.birthdate:
+#              now = datetime.datetime.now()    
+#              # profilebd = info.birthdate.year
+#              age = int((datetime.date.today() - info.birthdate).days / 365.25  )
+
+#              context = {'info':info,'proj':proj,'age':age}  
+#              return render(request,'pages/dashboard.html', context)
+#         else:
+#             context = {'info':info,'proj':proj}
+        
+#             return render(request, 'pages/dashboard.html', context)
+#     else:
+#         return HttpResponseRedirect(reverse('login'))
+
+
+#class based
+
+class DashboardView(TemplateView):
+   
+    template_name = 'pages/dashboard.html'
+    context = {}
+
+    def get(self, *args, **kwargs):
+        self.context['info'] = Profile.objects.get(user=self.request.user)
+        self.context['projects'] = Project.objects.filter(username=self.request.user)
+        return render(self.request, self.template_name, self.context)
+
+    def post(self, *args, **kwargs):
+        if self.request.user.is_authenticated():
+            info = Profile.objects.get(user=self.request.user)
+            projects = Project.objects.filter(username=self.request.user)
+
+            age = int((datetime.date.tody() - info.birthdate).days / 365.25 )
+            self.context['info'] = info
+            self.context['projects'] = projects
+            self.context['age'] = age
+            return render(self.request, self.template_name, self.context)
         else:
-            context = {'info':info,'proj':proj}
+            return HttpResponseRedirect(reverse('login'))
+    
+
+
+# @login_required(login_url='login')
+# def edit_profile_view(request):
+    
+#     profile = Profile.objects.get(user=request.user)
+#     form = EditForm(initial={
+#         'first_name': request.user.first_name,
+#         'last_name': request.user.last_name,
+#         'birthdate': profile.birthdate,
+#         'position' :profile.position,
+#         'phone':profile.phone,
+#         'address':profile.address})
+    
+#     if request.method == 'POST':
+#         form = EditForm(request.POST)
+#         if form.is_valid():
+
+#             info = request.POST
+#             user = User.objects.filter(username=request.user)
+#             user.update(last_name = info['last_name'])
+#             user.update(first_name = info['first_name'])
         
-            return render(request, 'pages/dashboard.html', context)
-    else:
-        return HttpResponseRedirect(reverse('login'))
+#             profile = Profile.objects.filter(user=request.user)
+#             profile.update(
+#                 position = info['position'],
+#                 birthdate = info['birthdate'],
+#                 phone = info['phone'],
+#                 address = info['address']) 
+#             return HttpResponseRedirect(reverse('dashboard'))
+#         else:
+#             return render(request, 'pages/edit_profile.html', {'form':form})
 
+#     return render(request, 'pages/edit_profile.html', {'form':form})
 
-@login_required(login_url='login')
-def edit_profile_view(request):
-    
-    profile = Profile.objects.get(user=request.user)
-    form = EditForm(initial={
-        'first_name': request.user.first_name,
-        'last_name': request.user.last_name,
-        'birthdate': profile.birthdate,
-        'position' :profile.position,
-        'phone':profile.phone,
-        'address':profile.address})
-    
-    if request.method == 'POST':
-        form = EditForm(request.POST)
+class EditProfileView(TemplateView):
+    template_name = 'pages/edit_profile.html'
+    context = {}
+
+    def get(self, *args, **kwargs):
+        profile = Profile.objects.get(user=self.request.user)
+        form = EditForm(initial={
+            'first_name':self.request.user.first_name,
+            'last_name':self.request.user.last_name,
+            'birthdate':profile.birthdate,
+            'position':profile.position,
+            'phone':profile.phone,
+            'address':profile.address
+            })
+        self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
+
+    def post(self, *args, **kwargs):
+        form = EditForm(self.request.POST, request=self.request)
         if form.is_valid():
-
-            info = request.POST
-            user = User.objects.filter(username=request.user)
-            user.update(last_name = info['last_name'])
-            user.update(first_name = info['first_name'])
-        
-            profile = Profile.objects.filter(user=request.user)
-            profile.update(
-                position = info['position'],
-                birthdate = info['birthdate'],
-                phone = info['phone'],
-                address = info['address']) 
+            form.save()
             return HttpResponseRedirect(reverse('dashboard'))
         else:
-            return render(request, 'pages/edit_profile.html', {'form':form})
+            self.context['form'] = form
+            return render(self.request, self.template_name, self.context)
+        self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
 
-    return render(request, 'pages/edit_profile.html', {'form':form})
+
+
 
 
 @login_required(login_url='login')
 def project_view(request, project_id): 
     data = Project.objects.get(id = project_id)
-    reports = WeeklyReport.objects.filter(project_name =data, user =request.user)
+    reports = WeeklyReport.objects.filter(project_name =data, user =request.user).order_by('-id')
     return render(request ,'pages/projects.html',{'data':data, 'reports':reports })
  
 
