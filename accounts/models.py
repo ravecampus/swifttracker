@@ -31,11 +31,11 @@ class WeeklyReport(models.Model):
     project_name = models.ForeignKey(Project)
     user = models.ForeignKey(User)
     title = models.CharField(max_length=120)
-    date_track= models.DateField()
+    date_track= models.DateField(null=True, blank=True)
     question1 = models.CharField(max_length=2000)
     question2 = models.CharField(max_length=2000)
     question3 = models.CharField(max_length=2000)
-    time_track = models.FloatField(max_length=2000)
+    time_track = models.FloatField(max_length=2000,null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(self.time_track)
+        return "{}".format(self.project_name)

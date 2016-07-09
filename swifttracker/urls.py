@@ -7,15 +7,15 @@ from accounts.views import *
 
 urlpatterns = [
     # Examples:
-    url(r'^$', 'accounts.views.home_view', name="home"),
+    url(r'^$', HomeView.as_view(), name="home"),
     url(r'^signup/$', SignupView.as_view(), name='signup'),
     url(r'^login/$',LoginView.as_view(), name='login'),
-    url(r'^logout/$', 'accounts.views.logout_view', name='logout'),
+    url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^dashboard/$',DashboardView.as_view(), name='dashboard'),
     url(r'^dashboard/edit_profile/$',EditProfileView.as_view(), name='edit_profile'),
     url(r'^dashboard/projects/(?P<project_id>\d+)/$', ProjectView.as_view(), name="project_detail"),
-    url(r'^dashboard/projects/add_report/(?P<project_id>\d+)/$', 'accounts.views.add_report_view', name="add_report"),
-    url(r'^dashboard/projects/edit_report/(?P<project_id>\d+)/(?P<report_id>\d+)/$', 'accounts.views.edit_report_view', name="edit_report"),
+    url(r'^dashboard/projects/add_report/(?P<project_id>\d+)/$', AddReportView.as_view(), name="add_report"),
+    url(r'^dashboard/projects/edit_report/(?P<project_id>\d+)/(?P<report_id>\d+)/$', EditReportView.as_view(), name="edit_report"),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

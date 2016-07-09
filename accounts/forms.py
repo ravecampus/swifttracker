@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from .models import Profile, Project
+from .models import Profile, Project, WeeklyReport
 from django import forms
 	
 # class ValidationSignUp1(forms.Form):
@@ -53,6 +53,7 @@ class ValidationSignUp(forms.ModelForm):
 
         return instance
 
+
 class Login(forms.Form):
     user_cache = None
     username = forms.CharField(max_length=120)
@@ -61,7 +62,6 @@ class Login(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         return super(Login, self).__init__(*args, **kwargs)
-
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -122,7 +122,6 @@ class EditForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        # fields ={'first_name','last_name'}
         fields = {
         'first_name',
         'last_name',
@@ -132,7 +131,56 @@ class EditForm(forms.ModelForm):
         'address'}
 
    
-class WeeklyReports(forms.Form):
+# class WeeklyReports(forms.Form):
+#     title = forms.CharField(max_length = 2000)
+#     date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
+#         'id':'datepicker',
+#         'data-date-format':'yyyy-mm-dd'
+#         }),input_formats=['%Y-%m-%d'])
+#     question1 = forms.CharField(label='What I did?:', widget=forms.Textarea)
+#     question2 = forms.CharField(label='What to do?:', widget=forms.Textarea)
+#     question3 = forms.CharField(label='Issues/Blocker:', widget=forms.Textarea)
+#     time_track = forms.FloatField(label='weekly hours')
+
+#     def clean_date_track(self):
+#         date_track = self.cleaned_data.get('date_track')
+#         return date_track
+
+
+class WeeklyReports(forms.ModelForm):
+
+    date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
+        'id':'datepicker',
+        'data-date-format':'yyyy-mm-dd'
+        }),input_formats=['%Y-%m-%d'])
+    question1 = forms.CharField(label='What I did?:', widget=forms.Textarea)
+    question2 = forms.CharField(label='What to do?:', widget=forms.Textarea)
+    question3 = forms.CharField(label='Issues/Blocker:', widget=forms.Textarea)
+    time_track = forms.FloatField(label='weekly hours')
+
+    def __init__(self, *args, **kwargs):
+        # {'user': user, }
+        # (requestPOST)
+        self.user = kwargs.pop('user', None)
+        self.project = kwargs.pop('earvin',None)
+        return super(WeeklyReports, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = WeeklyReport
+        fields = '__all__'
+        exclude ={'user','project_name'}
+   
+    def save(self, force_insert=False, force_update=False, commit=True):
+        instance = super(WeeklyReports, self).save(commit=False)
+        if commit:
+            instance.user = self.user
+            instance.project_name = self.project
+            instance.save()
+        return instance
+
+
+class WeeklyReportsEdit(forms.ModelForm):
+
     title = forms.CharField(max_length = 2000)
     date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
         'id':'datepicker',
@@ -146,19 +194,8 @@ class WeeklyReports(forms.Form):
     def clean_date_track(self):
         date_track = self.cleaned_data.get('date_track')
         return date_track
-
-
-class WeeklyReportsEdit(forms.Form):
-    title = forms.CharField(max_length = 2000)
-    date_track = forms.DateField(label='Date', widget=forms.TextInput(attrs={
-        'id':'datepicker',
-        'data-date-format':'yyyy-mm-dd'
-        }),input_formats=['%Y-%m-%d'])
-    question1 = forms.CharField(label='What I did?:', widget=forms.Textarea)
-    question2 = forms.CharField(label='What to do?:', widget=forms.Textarea)
-    question3 = forms.CharField(label='Issues/Blocker:', widget=forms.Textarea)
-    time_track = forms.FloatField(label='weekly hours')
-
-    def clean_date_track(self):
-        date_track = self.cleaned_data.get('date_track')
-        return date_track
+    class Meta:
+        model = WeeklyReport
+        fields ='__all__'
+        exclude = {'user', 'project_name'}
+        

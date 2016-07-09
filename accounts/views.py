@@ -11,9 +11,16 @@ import datetime
 # class based view
 from django.views.generic import TemplateView
 
-def home_view(request):
-    return render(request, 'pages/home.html',{})
+# function based
+# def home_view(request):
+#     return render(request, 'pages/home.html',{})
 
+#class based
+class HomeView(TemplateView):
+    template_name = 'pages/home.html'
+    context = {}
+    def get(self, *args, **kwargs):
+        return render(self.request, self.template_name, self.context)
 # def signup_view1(request):
 #     if request.method == "POST":
 #         form = ValidationSignUp(request.POST)
@@ -51,6 +58,8 @@ class SignupView(TemplateView):
         self.context['form'] = form
         return render(self.request, self.template_name, self.context)
 
+#function based
+
 # function based
 # def login_view(request):
 #     form = Login()
@@ -85,6 +94,7 @@ class LoginView(TemplateView):
         self.context['form'] = form
         return render(self.request, self.template_name, self.context)
 
+#function based
 
 # @login_required(login_url='login')
 # def dashboard_view(request):
@@ -117,7 +127,12 @@ class DashboardView(TemplateView):
     def get(self, *args, **kwargs):
         info = Profile.objects.get(user=self.request.user)
         projects = Project.objects.filter(username=self.request.user)
-        age = int((datetime.date.today() - info.birthdate).days / 365.25 )
+        if info.birthdate:
+            age = int((datetime.date.today() - info.birthdate).days / 365.25 )
+        else:
+            self.context['info'] = info
+            self.context['projects'] = projects
+            return render(self.request, self.template_name, self.context)
         self.context['info'] = info
         self.context['projects'] = projects
         self.context['age'] = age
@@ -134,11 +149,10 @@ class DashboardView(TemplateView):
         else:
             return HttpResponseRedirect(reverse('login'))
     
-
+#function based
 
 # @login_required(login_url='login')
 # def edit_profile_view(request):
-    
 #     profile = Profile.objects.get(user=request.user)
 #     form = EditForm(initial={
 #         'first_name': request.user.first_name,
@@ -169,6 +183,7 @@ class DashboardView(TemplateView):
 
 #     return render(request, 'pages/edit_profile.html', {'form':form})
 
+#class based
 class EditProfileView(TemplateView):
     template_name = 'pages/edit_profile.html'
     context = {}
@@ -200,13 +215,15 @@ class EditProfileView(TemplateView):
             self.context['form'] = form
         return render(self.request, self.template_name, self.context)
 
-
+#funtion based
 # @login_required(login_url='login')
 # def project_view(request, project_id): 
 #     data = Project.objects.get(id = project_id)
 #     reports = WeeklyReport.objects.filter(project_name =data, user =request.user).order_by('-id')
 #     return render(request ,'pages/projects.html',{'data':data, 'reports':reports })
 
+
+#class based
 class ProjectView(TemplateView):
     template_name = 'pages/projects.html'
     context = {}
@@ -218,63 +235,116 @@ class ProjectView(TemplateView):
         self.context['reports'] = reports
         return render(self.request, self.template_name, self.context)
 
-@login_required(login_url='login')
-def  add_report_view(request, project_id):
-    form = WeeklyReports()
-    if request.method == 'POST':
-        form = WeeklyReports(request.POST)
+#function based 
+
+# @login_required(login_url='login')
+# def  add_report_view(request, project_id):
+#     form = WeeklyReports()
+#     if request.method == 'POST':
+#         form = WeeklyReports(request.POST)
+#         if form.is_valid():
+#             info = request.POST
+#             projects = Project.objects.get(id=project_id, username=request.user)
+#             reports = WeeklyReport.objects.create(
+#                 project_name = projects, 
+#                 user = request.user,
+#                 title = info['title'],
+#                 date_track = info['date_track'],
+#                 question1 = info['question1'],
+#                 question2 = info['question2'],
+#                 question3 = info['question3'],
+#                 time_track = info['time_track']
+#                 )
+#             return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':project_id}))
+#         else:
+#             return render(request, 'pages/add_report.html', {'form':form})
+#     return render(request, 'pages/add_report.html',{'form':form})
+
+#class based
+class AddReportView(TemplateView):
+    template_name = 'pages/add_report.html'
+    context = {}
+
+    def get(self, *args, **kwargs):
+        form = WeeklyReports()
+        self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
+
+    def post(self, *args, **kwargs):
+        project = Project.objects.get(id=kwargs['project_id'], username =self.request.user)
+        user = self.request.user
+        
+        form = WeeklyReports(self.request.POST, user=user, earvin=project) #{'user':asdas, 'project_name': asdsa}
         if form.is_valid():
-            info = request.POST
-            projects = Project.objects.get(id=project_id, username=request.user)
-            reports = WeeklyReport.objects.create(
-                project_name = projects, 
-                user = request.user,
-                title = info['title'],
-                date_track = info['date_track'],
-                question1 = info['question1'],
-                question2 = info['question2'],
-                question3 = info['question3'],
-                time_track = info['time_track']
-                )
-            return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':project_id}))
+            form.save()
+            return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':kwargs['project_id']}))
         else:
-            return render(request, 'pages/add_report.html', {'form':form})
-    return render(request, 'pages/add_report.html',{'form':form})
+            self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
 
+#function based
 
-@login_required(login_url='login')
-def edit_report_view(request,project_id ,report_id):
+# @login_required(login_url='login')
+# def edit_report_view(request,project_id ,report_id):
 
-    project = WeeklyReport.objects.get(user=request.user ,id=report_id)
-    form = WeeklyReportsEdit(initial={
-        'title':project.title,
-        'date_track':project.date_track,
-        'question1':project.question1,
-        'question2':project.question2,
-        'question3':project.question3,
-        'time_track':project.time_track
-        })
-    if request.method == 'POST':
-        form = WeeklyReportsEdit(request.POST)
+#     project = WeeklyReport.objects.get(user=request.user ,id=report_id)
+#     form = WeeklyReportsEdit(initial={
+#         'title':project.title,
+#         'date_track':project.date_track,
+#         'question1':project.question1,
+#         'question2':project.question2,
+#         'question3':project.question3,
+#         'time_track':project.time_track
+#         })
+#     if request.method == 'POST':
+#         form = WeeklyReportsEdit(request.POST)
+#         if form.is_valid():
+#             info = request.POST
+#             reports = WeeklyReport.objects.filter(id=report_id)
+#             reports.update(title = project.title,
+#             date_track = info['date_track'],
+#             question1 = info['question1'],
+#             question2 = info['question2'],
+#             question3 = info['question3'],
+#             time_track = info['time_track'])
+#         return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':project_id}))
+#     else:
+#         return render(request, 'pages/edit_report.html',{'form':form})
+
+#     return render(request, 'pages/edit_report.html',{'form':form})
+
+#class based
+class EditReportView(TemplateView):
+    template_name = 'pages/edit_report.html'
+    context = {}
+
+    def get(self, *args, **kwargs):
+        project = WeeklyReport.objects.get(user=self.request.user, id=kwargs['report_id'])
+        form = WeeklyReportsEdit(instance=project)
+        self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
+
+    def post(self, *args, **kwargs):
+        project = WeeklyReport.objects.get(id=kwargs['report_id'])
+        form = WeeklyReportsEdit(self.request.POST, instance=project)
         if form.is_valid():
-            info = request.POST
-            reports = WeeklyReport.objects.filter(id=report_id)
-            reports.update(title = project.title,
-            date_track = info['date_track'],
-            question1 = info['question1'],
-            question2 = info['question2'],
-            question3 = info['question3'],
-            time_track = info['time_track'])
-        return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':project_id}))
-    else:
-        return render(request, 'pages/edit_report.html',{'form':form})
+            form.save()
+            return HttpResponseRedirect(reverse('project_detail', kwargs={'project_id':kwargs['project_id']}))
+        else:
+            self.context['form'] = form
+        return render(self.request, self.template_name, self.context)
 
-    return render(request, 'pages/edit_report.html',{'form':form})
+#function base
 
+# def logout_view(request):
+#     logout(request)
+#     return HttpResponseRedirect(reverse('login'))
 
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse('login'))
-
+#class based
+class LogoutView(TemplateView):
+    def get(self, *args, **kwargs):
+        logout(self.request)
+        return HttpResponseRedirect(reverse('login'))
+   
 
   
