@@ -1,11 +1,10 @@
 from .forms import ValidationSignUp, Login, EditForm, WeeklyReports, WeeklyReportsEdit
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from .models import Profile, Project, WeeklyReport
 from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from .mixins import AuthViewMixins
 from django.shortcuts import render
 from django.conf import settings
 import datetime
@@ -14,11 +13,6 @@ import calendar
 # class based view
 from django.views.generic import TemplateView
 
-class LoggedInMixin(object):
-    @method_decorator(login_required(login_url='login'))
-    def dispatch(self, *args, **kwargs):
-
-        return super(LoggedInMixin, self).dispatch(*args, **kwargs)
 
 
 #class based
@@ -28,7 +22,7 @@ class HomeView(TemplateView):
     def get(self, *args, **kwargs):
         return render(self.request, self.template_name, self.context)
 
-
+        
 # class based 
 class SignupView(TemplateView):
     template_name = 'pages/signup.html'
@@ -70,7 +64,7 @@ class LoginView(TemplateView):
 
 
 #class based
-class DashboardView(LoggedInMixin, TemplateView):
+class DashboardView(AuthViewMixins, TemplateView):
    
     template_name = 'pages/dashboard.html'
     context = {}
@@ -88,21 +82,10 @@ class DashboardView(LoggedInMixin, TemplateView):
         self.context['projects'] = projects
         self.context['age'] = age
         return render(self.request, self.template_name, self.context)
-
-    def post(self, *args, **kwargs):
-        # if self.request.user.is_authenticated():
-        info = Profile.objects.get(user=self.request.user)
-        projects = Project.objects.filter(username=self.request.user)
-
-        self.context['info'] = info
-        self.context['projects'] = projects
-        return render(self.request, self.template_name, self.context)
-        # else:
-        #     return HttpResponseRedirect(reverse('login'))
-    
+        
 
 #class based
-class EditProfileView(LoggedInMixin, TemplateView):
+class EditProfileView(AuthViewMixins, TemplateView):
     template_name = 'pages/edit_profile.html'
     context = {}
 
@@ -135,7 +118,7 @@ class EditProfileView(LoggedInMixin, TemplateView):
 
 
 #class based
-class ProjectView(LoggedInMixin, TemplateView):
+class ProjectView(AuthViewMixins, TemplateView):
     template_name = 'pages/projects.html'
     context = {}
 
@@ -148,7 +131,7 @@ class ProjectView(LoggedInMixin, TemplateView):
 
 
 #class based
-class AddReportView(LoggedInMixin, TemplateView):
+class AddReportView(AuthViewMixins, TemplateView):
     template_name = 'pages/add_report.html'
     context = {}
 
@@ -171,7 +154,7 @@ class AddReportView(LoggedInMixin, TemplateView):
 
 
 #class based
-class EditReportView(LoggedInMixin, TemplateView):
+class EditReportView(AuthViewMixins, TemplateView):
     template_name = 'pages/edit_report.html'
     context = {}
 

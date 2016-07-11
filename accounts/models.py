@@ -4,7 +4,14 @@ from django.db import models
 
 
 class Profile(models.Model):
-    POSITION = (('TRAINEE','trainee'),('DEVELOPER','developer'),('DESIGNER','designer'))
+    TRAINEE = 'TRAINEE'
+    DEVELOPER = 'DEVELOPER'
+    DESIGNER = 'DESIGNER'
+    POSITION = (
+        (TRAINEE,'trainee'),
+        (DEVELOPER,'developer'),
+        (DESIGNER,'designer')
+    )
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     position = models.CharField(max_length=2000, choices=POSITION)
@@ -17,10 +24,17 @@ class Profile(models.Model):
         return str(self.user)
 
 class Project(models.Model):
-    POSITION = (('TRAINEE','trainee'),('DEVELOPER','developer'),('DESIGNER','designer'))
+    TRAINEE = 'TRAINEE'
+    DEVELOPER ='DEVELOPER'
+    DESIGNER = 'DESIGNER'
+    POSITION = (
+        (TRAINEE,'trainee'),
+        (DEVELOPER,'developer'),
+        (DESIGNER,'designer')
+    )
     username = models.ManyToManyField(User) 
     name = models.CharField(max_length=2000) 
-    position = models.CharField(max_length=2000, choices=POSITION)
+    position = models.CharField(max_length=2000, choices=POSITION, default=TRAINEE)
     weekly_hours = models.IntegerField()  
 
     def __str__(self):

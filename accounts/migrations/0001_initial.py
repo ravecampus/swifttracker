@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=2000)),
-                ('position', models.CharField(max_length=2000, choices=[(b'TRAINEE', b'trainee'), (b'DEVELOPER', b'developer'), (b'DESIGNER', b'designer')])),
+                ('position', models.CharField(default=b'TRAINEE', max_length=2000, choices=[(b'TRAINEE', b'trainee'), (b'DEVELOPER', b'developer'), (b'DESIGNER', b'designer')])),
                 ('weekly_hours', models.IntegerField()),
                 ('username', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
